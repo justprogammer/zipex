@@ -19,10 +19,12 @@ function Dropbox() {
                       cancel={() => console.log('closed')}
                       multiselect={true}
                       >
-        <button>Upload or Choose Files</button>
+       <a href='#' class="dropbox"> 
+      <i class="icon" ></i> 
+      "dropbox"
+   </a>
         <div className="dropbox"></div>
         <br/><br/>
-        <img src={url} width="200" height="200" alt=""/>
       </DropboxChooser>
     
     </div>

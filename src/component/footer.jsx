@@ -8,10 +8,6 @@ const DefaultButton = (props) => {
      <div>
       <Gdrive />
       <Dropbox />
-      <a href='#' class="dropbox"> 
-      <i class="icon" ></i> 
-      "dropbox"
-   </a>
    </div>
     
   )
