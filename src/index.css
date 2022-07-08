@@ -86,3 +86,15 @@ a {
 .dzu-inputLabel > input {
   display: none;
 }
+.dzu-input {
+  display: none;
+}
+.dzu-inputLabelWithFiles {
+  display:none;
+}
+.dzu-inputLabel {
+  padding-top: 10em;
+  align-text:center;
+  height: 150px;
+  width: 100px;
+}
