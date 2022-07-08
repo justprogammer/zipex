@@ -1,9 +1,12 @@
+import 'react-dropzone-uploader/dist/styles.css'
+import Dropzone from 'react-dropzone-uploader'
 import React, { useState, useRef } from 'react'
 import { makeStyles, Paper } from '@material-ui/core'
 import { model } from '../zip/zip'
 import DefaultButton from './default_button'
 import Output from './output'
-import Dropzone from 'react-dropzone-uploader'
+
+export let entries
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -26,27 +29,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export let entries
+const MyUploader = () => {
+  // specify upload params and url for your files
+  const getUploadParams = ({ meta }) => { return { url: 'https://httpbin.org/post' } }
+  
+  // called every time a file's `status` changes
+  const handleChangeStatus = ({ meta, file }, status) => { console.log(status, meta, file) }
+  
+  // receives array of files that are done uploading when submit button is clicked
+  const handleSubmit = (files, allFiles) => {
+    console.log(files.map(f => f.meta))
+    allFiles.forEach(f => f.remove())
+  }
 
-export async function download(entry, li, a) {
-  model.getURL(entry).then(
-    (value) => {
-      const clickEvent = new MouseEvent('click')
-      a.href = value
-      a.download = entry.filename
-      if (entry.directory === true) {
-        a.removeAttribute('href')
-        a.removeAttribute('download')
-      }
-      a.dispatchEvent(clickEvent)
-    },
-    (error) => {
-      console.log(error)
-    }
-  )
-}
-
-const Content = () => {
   const classes = useStyles()
   const [hide, setHide] = useState(true)
   const fileInput = useRef(null)
@@ -70,19 +65,35 @@ const Content = () => {
 
   const selectFile = async (files) => {
     try {
-      if (files) {
-        selectedFile = files[0].file
-      } else {
-      selectedFile = fileInput.current.files[0]
+
+      const reader = new FileReader()
+
+      reader.onabort = () => console.log('file reading was aborted')
+      reader.onerror = () => console.log('file reading has failed')
+      reader.onload = () => {
+      // Do whatever you want with the file contents
+      console.log("Loaded")
+        selectedFile = reader.result
+       loadFile().then(() => {})
+
       }
-      await loadFile()
+      console.log("going to read");
+      console.log(files[0]);
+      // reader.readAsArrayBuffer(files[0].file)
+      selectedFile = files[0].file
+      await loadFile();selectedFile = files[0].file
+
+      // console.log(files[0].files);
+      // selectedFile = files
     } catch (error) {
       alert(error)
     }
   }
 
   const loadFile = async () => {
+    console.log("EFFEESEXY")
     entries = await model.getEntries(selectedFile)
+    console.log(entries)
     setHide(false)
     refreshList()
   }
@@ -123,27 +134,19 @@ const Content = () => {
 
   return (
     <>
-      <Paper elevation={0} variant='outlined' className={classes.root}>
-        {hide === true ? (
-          <div>
-          <DefaultButton
-            fileInputButtons={fileInputButton}
-            textDeco={classes.textTransform}
-            onHandleButtonOnClick={handleButtonOnclick}
-            onHandleOnChange={selectFile}
-            fileInput={fileInput}
-          />
-          <Dropzone
+
+    {hide === true ? (
+      <Dropzone
+      getUploadParams={getUploadParams}
+      onChangeStatus={handleChangeStatus}
       onDrop={selectFile}
       onSubmit={selectFile}
     />
-          </div>
-        ) : (
-          <Output refFile={fileList} ulStyle={classes.ulRoot} />
-        )}
-      </Paper>
+    ) : (
+      <Output refFile={fileList} ulStyle={classes.ulRoot} />
+    )}
     </>
   )
 }
-
-export default Content
+<MyUploader />
+export default MyUploader

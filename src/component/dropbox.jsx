@@ -11,7 +11,6 @@ function Dropbox() {
   }
   return (
     <div className="App">
-      <h1 style={{textAlign:"center"}}>Upload Or Choose Files to DropBox</h1>
       <br/><br/>
     <div className="container">
       <DropboxChooser appKey={APP_KEY}

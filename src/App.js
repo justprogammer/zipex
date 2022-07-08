@@ -32,6 +32,7 @@ function App() {
         <Header />
         <main>
           <Content />
+          
         </main>
         <Footer />
         <CssBaseline />
